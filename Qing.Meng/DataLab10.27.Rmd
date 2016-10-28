@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 summary(mtcars)
 str(mtcars)
 names(mtcars)
+
 ```
 
 ## Including Plots
