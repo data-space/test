@@ -2,21 +2,62 @@
 title: "rscrape"
 author: "Tyler Miguel"
 date: "11/17/2016"
-output: html_document
+output:
+  html_document
 ---
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+# Scraping data from website in R
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+## Introduction
+
+The content below we be a step-by-step introduction guide as to how to scrape data from websites, using R. We will focus on scraping movie data in R, and then move up to more involved projects.
+
+This is the first in the series.
+
+## Downloading packages
+
+First, we need to download the packages we are going to use. You can see below that I just called the packages using the library function, but if you don't already have the libraries installed, in stall them by using 'install.packages()'. 
+
+```{r, message=FALSE}
+
+library(rvest)
+library(dplyr)
+library(XML)
+
+```
+
+## Decide which URL you would like to scrape
+
+Now that the packages are loaded into the environment, we are going to take a look at an easy example of scraping data from an imdb webite.
+
+We are interested in scraping text data from a text table on the Deadpool imdb website. (great movie) 
+
+To do this, we must first locate the URL to the website, and then assign this URL to a variable called "movie". The 'read_html' function takes a URL and converts it into a connection. We assign this connection to the variable "movie".
+
 
 ```{r}
-summary(cars)
+movie <- read_html("http://www.imdb.com/title/tt1431045/")
 ```
 
-You can also embed plots, for example:
+## Parse text data from website
 
-```{r, echo=FALSE}
-plot(cars)
+Now that we have a connection variable called "movie", we will use this variable and pass it through functions to extract the data we are looking for.
+
+We will use 'html_node' to extract pieces of the html data that we can access. Using a CSS selector (we used selector gadget, a google chrome extention) we are able to highlight which part of the website we would like to pull the data from. Selector gadget will then tell you the title of the section of data you want to select. You can pass this title through the 'html_node' and use 'html_text' to extract the text from html. We will assign this data to a new variable called summarydata.
+
+Additionally, we used the pipe operator from the dplyr package, so if you are not farmilar with this, and the code below looks confusing to you, feel free to read about it and come back to this chunk of code. 
+
+```{r}
+summarydata <- movie %>% html_node(".summary_text") %>% html_text() 
+## .summary_text is from CSS selector
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## Print data
+
+Now that we have 'summarydata' as a new variable, we will go ahead and print it to our console.
+
+```{r}
+summarydata
+```
+
+As you can see, we were able to extract the line of text right below the trailer video (go onto the website to see what I'm talking about).
